@@ -1,0 +1,4 @@
+name: Server
+version: 1.0
+author: Mas281
+main: me.itsmas.network.server.Core
