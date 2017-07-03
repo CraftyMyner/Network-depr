@@ -1,7 +1,7 @@
 package me.itsmas.network.server;
 
-import me.itsmas.network.server.command.CommandManager;
 import me.itsmas.network.server.chat.ChatManager;
+import me.itsmas.network.server.command.CommandManager;
 import me.itsmas.network.server.database.Database;
 import me.itsmas.network.server.database.MongoDB;
 import me.itsmas.network.server.lang.Lang;

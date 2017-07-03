@@ -41,7 +41,7 @@ public final class UtilTime
         long cumulative = 0L;
 
         long days = TimeUnit.MILLISECONDS.toDays(millis);
-        cumulative += days * 86400000;
+        cumulative += TimeUnit.DAYS.toMillis(days);
 
         if (days != 0L)
         {
@@ -49,7 +49,7 @@ public final class UtilTime
         }
 
         long hours = TimeUnit.MILLISECONDS.toHours(millis - cumulative);
-        cumulative += hours * 3600000;
+        cumulative += TimeUnit.HOURS.toMillis(hours);
 
         if (hours != 0L)
         {
@@ -57,7 +57,7 @@ public final class UtilTime
         }
 
         long minutes = TimeUnit.MILLISECONDS.toMinutes(millis - cumulative);
-        cumulative += minutes * 60000;
+        cumulative += TimeUnit.MINUTES.toMillis(minutes);
 
         if (minutes != 0L)
         {
