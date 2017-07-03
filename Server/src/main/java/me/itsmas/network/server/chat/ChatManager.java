@@ -1,4 +1,4 @@
-package me.itsmas.network.server.command.chat;
+package me.itsmas.network.server.chat;
 
 import me.itsmas.network.server.Core;
 import me.itsmas.network.server.module.Module;
@@ -25,17 +25,6 @@ public class ChatManager extends Module
     public void onEnable()
     {
         handlers = new HashSet<>();
-
-        addChatHandler(((user, msg) ->
-        {
-            if (core.getNetwork().getServerName() == null)
-            {
-                user.sendMessage("chat;server_start_wait");
-                return false;
-            }
-
-            return true;
-        }));
 
         addChatHandler(new ChatFilter(core));
     }

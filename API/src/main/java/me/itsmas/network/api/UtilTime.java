@@ -1,7 +1,5 @@
 package me.itsmas.network.api;
 
-import org.apache.commons.lang3.time.DurationFormatUtils;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
@@ -39,17 +37,41 @@ public final class UtilTime
      */
     public static String toFriendlyString(long millis)
     {
-        String duration =  DurationFormatUtils.formatDuration(millis, "dd/ HH/ mm/ ss/");
+        String string = "";
+        long cumulative = 0L;
 
-        for (TimeUnit unit : TimeUnit.values())
+        long days = TimeUnit.MILLISECONDS.toDays(millis);
+        cumulative += days * 86400000;
+
+        if (days != 0L)
         {
-            if (unit.ordinal() > 2)
-            {
-                duration = UtilString.replaceLast(duration, "/", unit.name().substring(1, 1).toLowerCase());
-            }
+            string += days + "d";
         }
 
-        return duration;
+        long hours = TimeUnit.MILLISECONDS.toHours(millis - cumulative);
+        cumulative += hours * 3600000;
+
+        if (hours != 0L)
+        {
+            string += hours + "h";
+        }
+
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis - cumulative);
+        cumulative += minutes * 60000;
+
+        if (minutes != 0L)
+        {
+            string += minutes + "m";
+        }
+
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(millis - cumulative);
+
+        if (seconds != 0L)
+        {
+            string += seconds + "s";
+        }
+
+        return string;
     }
 
     /**

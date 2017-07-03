@@ -52,18 +52,15 @@ public final class UtilString
     }
 
     /**
-     * Replaces the last occurrence of characters in a {@link String}
+     * Returns the singular or plural form of a noun depending on the amount
      *
-     * @param string The string to replace the characters of
-     * @param last The sequence of characters to find
-     * @param replacement What to replace the character with
-     * @return The replaced string
+     * @param amount The amount of the noun
+     * @param singular The singular form of the noun
+     * @param plural The plural form of the noun
+     * @return The correctly formed noun
      */
-    public static String replaceLast(String string, String last, String replacement)
+    public static String plural(int amount, String singular, String plural)
     {
-        StringBuffer buffer = new StringBuffer(string);
-        buffer = new StringBuffer(buffer.reverse().toString().replaceFirst(last, replacement));
-
-        return buffer.reverse().toString();
+        return amount == 1 ? singular : plural;
     }
 }

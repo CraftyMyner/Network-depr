@@ -426,6 +426,8 @@ public class User
      */
     public long getPlayTime()
     {
+        updatePlayTime();
+
         return playTime;
     }
 

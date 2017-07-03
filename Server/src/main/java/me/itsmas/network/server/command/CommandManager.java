@@ -8,13 +8,14 @@ import me.itsmas.network.server.command.annotations.SpecificRanks;
 import me.itsmas.network.server.command.annotations.Usage;
 import me.itsmas.network.server.command.context.ContextResolver;
 import me.itsmas.network.server.command.context.IntResolver;
+import me.itsmas.network.server.command.context.MaterialResolver;
 import me.itsmas.network.server.command.context.RankResolver;
-import me.itsmas.network.server.command.context.StringResolver;
 import me.itsmas.network.server.command.context.UserResolver;
 import me.itsmas.network.server.module.Module;
 import me.itsmas.network.server.rank.Rank;
 import me.itsmas.network.server.user.User;
 import org.apache.commons.lang3.ArrayUtils;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
@@ -51,10 +52,12 @@ public class CommandManager extends Module
      */
     private void registerContextHandlers()
     {
-        registerContext(String.class, new StringResolver());
         registerContext(int.class, new IntResolver());
-        registerContext(User.class, new UserResolver(core));
+        registerContext(Integer.class, new IntResolver());
+
         registerContext(Rank.class, new RankResolver());
+        registerContext(Material.class, new MaterialResolver());
+        registerContext(User.class, new UserResolver(core));
     }
 
     /**
@@ -111,6 +114,12 @@ public class CommandManager extends Module
 
             for (Parameter parameter : method.getParameters())
             {
+                // There's already been an optional argument
+                if (optional)
+                {
+                    return;
+                }
+
                 paramIndex++;
 
                 Class<?> paramClass = parameter.getType();
@@ -128,18 +137,12 @@ public class CommandManager extends Module
 
                 if (!isSupportedParameter(paramClass))
                 {
-                    // Parameter with no context found
+                    // Parameter with no context found or not String
                     return;
                 }
 
                 if (parameter.isAnnotationPresent(Optional.class))
                 {
-                    if (optional)
-                    {
-                        // Only one optional argument allowed
-                        return;
-                    }
-
                     optional = true;
                 }
                 else
@@ -191,7 +194,7 @@ public class CommandManager extends Module
                     return;
                 }
 
-                executeCommand(user, args, cmd);
+                executeCommand(user, args, cmd, event.getMessage());
                 return;
             }
         }
@@ -204,7 +207,7 @@ public class CommandManager extends Module
      * @param args The arguments the user has provided
      * @param cmd The command the user will execute
      */
-    private void executeCommand(User user, List<String> args, CommandData cmd)
+    private void executeCommand(User user, List<String> args, CommandData cmd, String rawMsg)
     {
         List<Object> params = new ArrayList<>();
 
@@ -216,14 +219,17 @@ public class CommandManager extends Module
         {
             Parameter parameter = method.getParameters()[i + 1];
 
-            String argument;
-
-            try
+            if (i >= args.size())
             {
-                argument = args.get(i);
+                continue;
             }
-            catch (IndexOutOfBoundsException ex)
+
+            String argument = args.get(i);
+
+            // No need to resolve strings
+            if (parameter.getType() == String.class)
             {
+                params.add(argument);
                 continue;
             }
 
@@ -254,10 +260,12 @@ public class CommandManager extends Module
         try
         {
             method.invoke(cmd.getObject(), params.toArray(new Object[0]));
+
+            user.addLog("Executed command: " + rawMsg);
         }
         catch (IllegalAccessException | InvocationTargetException ex)
         {
-            logFatal("Error executing command for player " + user.getName());
+            logFatal("Error executing command for player " + user.getName() + ": " + rawMsg);
             ex.printStackTrace();
         }
     }
@@ -339,6 +347,6 @@ public class CommandManager extends Module
      */
     private boolean isSupportedParameter(Class<?> clazz)
     {
-        return contextHandlers.keySet().contains(clazz);
+        return contextHandlers.keySet().contains(clazz) || clazz == String.class;
     }
 }

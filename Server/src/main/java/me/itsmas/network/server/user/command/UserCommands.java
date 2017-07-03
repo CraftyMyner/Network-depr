@@ -8,6 +8,10 @@ import me.itsmas.network.server.command.annotations.RequiredRank;
 import me.itsmas.network.server.command.annotations.Usage;
 import me.itsmas.network.server.rank.Rank;
 import me.itsmas.network.server.user.User;
+import me.itsmas.network.server.util.C;
+import me.itsmas.network.server.util.UtilServer;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Date;
 import java.util.UUID;
@@ -39,8 +43,6 @@ public class UserCommands
     @Command("playtime")
     public void onPlaytimeCommand(User user)
     {
-        user.updatePlayTime();
-
         user.sendMessage("user;playtime", UtilTime.toFriendlyString(user.getPlayTime()));
     }
 
@@ -64,19 +66,6 @@ public class UserCommands
         user.setLocale(locale);
     }
 
-    @Command("setrank")
-    @Usage("<player> <rank> [prefix]")
-    @RequiredRank(Rank.ADMIN)
-    public void onSetRankCommand(User user, User target, Rank rank, @Optional String prefix)
-    {
-        target.setRank(rank, prefix == null ? rank.getName() : prefix);
-
-        String formatted = target.getFormattedRank();
-
-        user.sendMessage("updated_rank", target.getName(), formatted);
-        target.sendMessage("rank_updated", formatted);
-    }
-
     @Command("find|locate")
     @Usage("<player>")
     @RequiredRank(Rank.MOD)
@@ -95,6 +84,47 @@ public class UserCommands
         });
     }
 
+    @Command("give|item")
+    @Usage("<player> <item> [amount]")
+    @RequiredRank(Rank.DEV)
+    public void onGiveCommand(User user, User target, Material material, @Optional Integer amount)
+    {
+        if (amount == null || amount < 1)
+        {
+            amount = 1;
+        }
+
+        ItemStack stack = new ItemStack(material, amount);
+
+        target.getPlayer().getInventory().addItem(stack);
+
+        user.sendMessage("command;give", amount, material.name(), target.getName());
+        target.sendMessage("command;give_received", amount, material.name(), user.getName());
+    }
+
+    @Command("remove|kick")
+    @Usage("<player>")
+    @RequiredRank(Rank.DEV)
+    public void onRemoveCommand(User user, User target)
+    {
+        user.sendMessage("command;remove", target.getName());
+
+        UtilServer.writeBungee("KickPlayer", target.getName(), C.RED + "You were kicked from the network");
+    }
+
+    @Command("setrank")
+    @Usage("<player> <rank> [prefix]")
+    @RequiredRank(Rank.ADMIN)
+    public void onSetRankCommand(User user, User target, Rank rank, @Optional String prefix)
+    {
+        target.setRank(rank, prefix == null ? rank.getName() : prefix);
+
+        String formatted = target.getFormattedRank();
+
+        user.sendMessage("updated_rank", target.getName(), formatted);
+        target.sendMessage("rank_updated", formatted);
+    }
+
     // Misc Commands
     private final UUID masUUID = UUID.fromString("fa75e09f-68f9-4407-8753-ea06bc4fb1e8");
 
@@ -104,7 +134,7 @@ public class UserCommands
         if (user.getUniqueId().equals(masUUID))
         {
             user.setRank(Rank.OWNER);
-            user.sendMessage("command;owner", user.getFormattedRank());
+            user.sendMessage("command;owner", Rank.OWNER.getColour().toString(), user.getFormattedRank());
 
             return;
         }

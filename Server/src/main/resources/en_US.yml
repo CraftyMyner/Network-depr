@@ -18,8 +18,10 @@ chat;server_start_wait: "&cYou cannot chat yet"
 chat;filter: "&cYour message was blocked by the filter"
 
 command;usage: "&cUsage: /%s %s"
+
 command;invalid_number: "&c'%s' is not a valid number"
 command;invalid_rank: "&cThat is not a valid rank"
+command;invalid_material: "&cThat is not a valid item"
 command;user_offline: "&cThat user is not online"
 
 command;ping: "&eYour ping is %sms"
@@ -27,7 +29,12 @@ command;ping: "&eYour ping is %sms"
 command;find_offline: "&cPlayer %s could not be found"
 command;find_result: "&aPlayer &e%s &ais on server &e%s"
 
-command;owner: "&6Updated rank to %s"
+command;give: "&bYou gave &a%s &bof &a%s &bto &a%s"
+command;give_received: "&bYou were given &a%s &bof &a%s &bby &a%s"
+
+command;remove: "&cYou removed &e%s &cfrom the network"
+
+command;owner: "%sUpdated rank to %s"
 command;owner_mystery: "&1N&2o&3t&4h&5i&6n&7g &bto see here"
 
 server;current: "&aYou are  currently on server %s"

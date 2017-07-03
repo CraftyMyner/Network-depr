@@ -1,4 +1,4 @@
-package me.itsmas.network.server.command.chat;
+package me.itsmas.network.server.chat;
 
 import me.itsmas.network.server.user.User;
 

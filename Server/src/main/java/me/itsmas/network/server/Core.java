@@ -1,7 +1,7 @@
 package me.itsmas.network.server;
 
 import me.itsmas.network.server.command.CommandManager;
-import me.itsmas.network.server.command.chat.ChatManager;
+import me.itsmas.network.server.chat.ChatManager;
 import me.itsmas.network.server.database.Database;
 import me.itsmas.network.server.database.MongoDB;
 import me.itsmas.network.server.lang.Lang;
@@ -16,10 +16,10 @@ public class Core extends JavaPlugin
     private ModuleManager moduleManager;
     private Database database;
     private CommandManager commandManager;
+    private ChatManager chatManager;
     private Network network;
     private UserManager userManager;
     private Lang lang;
-    private ChatManager chatManager;
 
     @Override
     public void onEnable()
@@ -29,10 +29,10 @@ public class Core extends JavaPlugin
         moduleManager = new ModuleManager();
         database = new MongoDB(this);
         commandManager = new CommandManager(this);
+        chatManager = new ChatManager(this);
         network = new RedisNetwork(this);
         userManager = new UserManager(this);
         lang = new Lang(this);
-        chatManager = new ChatManager(this);
     }
 
     @Override

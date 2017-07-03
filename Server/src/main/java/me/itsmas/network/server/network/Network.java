@@ -25,6 +25,17 @@ public abstract class Network extends Module
         addSubModule(new LoginListener(this));
 
         registerCommands(this);
+
+        core.getChatManager().addChatHandler(((user, msg) ->
+        {
+            if (core.getNetwork().getServerName() == null)
+            {
+                user.sendMessage("chat;server_start_wait");
+                return false;
+            }
+
+            return true;
+        }));
     }
 
     /**
@@ -107,20 +118,19 @@ public abstract class Network extends Module
             return;
         }
 
-        if (user.isCoolingDown(SWITCH_COOLDOWN, serverSwitchCooldown, false))
-        {
-            user.sendMessage("server;switch_cooldown");
-            return;
-        }
-
         if (!serverExists(server))
         {
             user.sendMessage("server;invalid_server");
             return;
         }
 
-        user.save(false);
+        if (user.isCoolingDown(SWITCH_COOLDOWN, serverSwitchCooldown, false))
+        {
+            user.sendMessage("server;switch_cooldown");
+            return;
+        }
 
+        user.save(false);
         user.sendMessage("server;sending", server);
 
         UtilServer.runDelayed(() -> UtilServer.writeBungee("ConnectOther", user.getName(), server), serverSwitchDelay);
@@ -159,7 +169,7 @@ public abstract class Network extends Module
      */
     public abstract void getServer(String player, Consumer<String> consumer);
 
-    @Command(value = "server")
+    @Command("server")
     public void onServerCommand(User user, @Optional String server)
     {
         if (server == null)
