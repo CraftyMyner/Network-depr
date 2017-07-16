@@ -63,4 +63,26 @@ public final class UtilString
     {
         return amount == 1 ? singular : plural;
     }
+
+
+    /**
+     * Determines what percentage of a string is in caps
+     * @param input The input message
+     *
+     * @return The caps percentage
+     */
+    public static double percentCaps(String input)
+    {
+        int caps = 0;
+
+        for (char character : input.toCharArray())
+        {
+            if (Character.isUpperCase(character))
+            {
+                caps++;
+            }
+        }
+
+        return (double) ((caps / input.length()) * 100);
+    }
 }

@@ -15,9 +15,12 @@ no_permission: "&cYou don't have permission"
 cooldown;message: "&cYou must wait before using %s"
 
 chat;server_start_wait: "&cYou cannot chat yet"
+chat;cooldown: "&cYou must wait before speaking again"
+chat;caps: "&cYour message contains too many caps"
 chat;filter: "&cYour message was blocked by the filter"
 
 command;usage: "&cUsage: /%s %s"
+command;cooldown: "&cYou must wait before using another command"
 
 command;invalid_number: "&c'%s' is not a valid number"
 command;invalid_rank: "&cThat is not a valid rank"

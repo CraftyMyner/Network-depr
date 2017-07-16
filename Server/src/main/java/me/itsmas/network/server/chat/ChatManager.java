@@ -1,6 +1,8 @@
 package me.itsmas.network.server.chat;
 
 import me.itsmas.network.server.Core;
+import me.itsmas.network.server.chat.handlers.CapsBlocker;
+import me.itsmas.network.server.chat.handlers.ChatFilter;
 import me.itsmas.network.server.module.Module;
 import me.itsmas.network.server.rank.Rank;
 import me.itsmas.network.server.user.User;
@@ -26,6 +28,18 @@ public class ChatManager extends Module
     {
         handlers = new HashSet<>();
 
+        addChatHandler((user, msg) ->
+        {
+            if (user.isCoolingDown("Chat", 1000, false))
+            {
+                user.sendMessage("chat;cooldown");
+                return false;
+            }
+
+            return true;
+        });
+
+        addChatHandler(new CapsBlocker());
         addChatHandler(new ChatFilter(core));
     }
 

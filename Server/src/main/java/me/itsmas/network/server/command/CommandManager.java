@@ -194,6 +194,12 @@ public class CommandManager extends Module
                     return;
                 }
 
+                if (user.isCoolingDown("Command", 1000, false))
+                {
+                    user.sendMessage("command;cooldown");
+                    return;
+                }
+
                 executeCommand(user, args, cmd, event.getMessage());
                 return;
             }

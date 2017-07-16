@@ -1,6 +1,7 @@
-package me.itsmas.network.server.chat;
+package me.itsmas.network.server.chat.handlers;
 
 import me.itsmas.network.server.Core;
+import me.itsmas.network.server.chat.ChatHandler;
 import me.itsmas.network.server.user.User;
 
 import java.util.List;
@@ -10,9 +11,9 @@ import java.util.stream.Collectors;
 /**
  * Blocks innapropriate chat messages
  */
-class ChatFilter implements ChatHandler
+public class ChatFilter implements ChatHandler
 {
-    ChatFilter(Core core)
+    public ChatFilter(Core core)
     {
         List<String> blocked = core.getConfig("chat.filter");
 
