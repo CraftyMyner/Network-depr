@@ -5,6 +5,7 @@ import me.itsmas.network.server.util.UtilServer;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.JedisPubSub;
 import redis.clients.jedis.Protocol;
 
 import java.util.HashSet;
@@ -34,8 +35,9 @@ public class RedisNetwork extends Network
         log("Attempting to connect to Redis");
 
         RedisInfo info = new RedisInfo(core);
-
         pool = new JedisPool(new JedisPoolConfig(), info.getIp(), info.getPort(), Protocol.DEFAULT_TIMEOUT, info.getPassword());
+
+        executeAsync(this::initPubSub);
 
         log("Redis connection established");
     }
@@ -74,6 +76,16 @@ public class RedisNetwork extends Network
         updateQueue = null;
     }
 
+    private void initPubSub()
+    {
+
+    }
+
+    private class NetworkPubSub extends JedisPubSub
+    {
+
+    }
+
     @Override
     void updateServer(String player)
     {
@@ -83,31 +95,36 @@ public class RedisNetwork extends Network
             return;
         }
 
-        executeJedis(jedis -> jedis.hset(player.toLowerCase(), SERVER_FIELD, getServerName()));
+        executeAsync(jedis -> jedis.hset(player.toLowerCase(), SERVER_FIELD, getServerName()));
     }
 
     @Override
     void removeTrackingData(String player)
     {
-        executeJedis(jedis -> jedis.hdel(player.toLowerCase(), SERVER_FIELD));
+        executeAsync(jedis -> jedis.hdel(player.toLowerCase(), SERVER_FIELD));
     }
 
     @Override
     public void getServer(String player, Consumer<String> consumer)
     {
-        executeJedis(jedis ->
-            UtilServer.runAsync(() ->
-            {
-                String value = jedis.hget(player.toLowerCase(), SERVER_FIELD);
+        executeAsync(jedis ->
+        {
+            String value = jedis.hget(player.toLowerCase(), SERVER_FIELD);
 
-                UtilServer.runSync(() -> consumer.accept(value));
-            })
-        );
+            UtilServer.runSync(() -> consumer.accept(value));
+        });
+    }
+
+    @Override
+    public void sendPacket(NetworkPacket packet, String server)
+    {
+        executeAsync(jedis -> jedis.subscribe());
     }
 
     /**
-     * Fetches a {@link Jedis} object and executes an action for it
+     * Fetches a {@link Jedis} object from the pool and executes an action for it
      *
+     * @see #pool
      * @param consumer The action to execute
      */
     private void executeJedis(Consumer<Jedis> consumer)
@@ -116,5 +133,10 @@ public class RedisNetwork extends Network
         {
             consumer.accept(jedis);
         }
+    }
+
+    private void executeAsync(Consumer<Jedis> consumer)
+    {
+        UtilServer.runAsync(() -> executeJedis(consumer));
     }
 }
