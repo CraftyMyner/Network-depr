@@ -1,4 +1,7 @@
 # This project is old and should be considered deprecated
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b7d3ea9cc23c476aafb7359492bd535b)](https://app.codacy.com/app/Mas281/Network-depr?utm_source=github.com&utm_medium=referral&utm_content=Mas281/Network-depr&utm_campaign=badger)
+
 An updated version of this project can be found [here](https://github.com/Mas281/Network-v4).
 
 # Network
