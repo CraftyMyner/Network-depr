@@ -1,5 +1,7 @@
 package me.itsmas.network.api;
 
+import java.util.StringJoiner;
+
 /**
  * String utility methods
  */
@@ -10,7 +12,7 @@ public final class UtilString
      */
     private UtilString()
     {
-        throw new AssertionError("Cannot instantiate utility class");
+        UtilException.throwNew();
     }
 
     /**
@@ -64,6 +66,23 @@ public final class UtilString
         return amount == 1 ? singular : plural;
     }
 
+    /**
+     * Combines an array of objects to a string
+     *
+     * @param delimiter The separating character
+     * @return The combined string
+     */
+    public static String combineArgs(String delimiter, Object... objects)
+    {
+        StringJoiner joiner = new StringJoiner(" ");
+
+        for (Object object : objects)
+        {
+            joiner.add(object.toString()).add(delimiter);
+        }
+
+        return joiner.toString();
+    }
 
     /**
      * Determines what percentage of a string is in caps
@@ -83,6 +102,6 @@ public final class UtilString
             }
         }
 
-        return (double) ((caps / input.length()) * 100);
+        return (double) caps / input.length() * 100.0D;
     }
 }

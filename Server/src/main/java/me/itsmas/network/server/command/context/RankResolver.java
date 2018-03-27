@@ -15,6 +15,6 @@ public class RankResolver implements ContextResolver<Rank>
     @Override
     public void sendError(User user, String input)
     {
-        user.sendMessage("command;invalid_rank");
+        user.sendMessage("command.invalid_rank");
     }
 }

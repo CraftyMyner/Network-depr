@@ -1,0 +1,14 @@
+database:
+  ip:
+  port:
+  database:
+  username:
+  password:
+
+redis:
+  ip:
+  port:
+  password:
+
+chat:
+  filter:

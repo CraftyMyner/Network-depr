@@ -32,6 +32,9 @@ public class User
     private int id;
 
     @Indexed(options = @IndexOptions(unique = true))
+    private String name;
+
+    @Indexed(options = @IndexOptions(unique = true))
     private UUID uuid;
 
     private Rank rank;
@@ -53,8 +56,9 @@ public class User
 
     public User(){}
 
-    User(UUID uuid)
+    User(String name, UUID uuid)
     {
+        this.name = name;
         this.uuid = uuid;
 
         this.rank = Rank.DEFAULT;
@@ -98,11 +102,12 @@ public class User
         this.core = core;
         this.player = player;
 
-        joinTime = System.currentTimeMillis();
+        this.name = player.getName();
+
+        this.joinTime = System.currentTimeMillis();
 
         updateTabName();
-
-        updateCooldown(Network.SWITCH_COOLDOWN, 2500);
+        updateCooldown(Network.SWITCH_COOLDOWN, 2500L);
     }
 
     /**
@@ -142,7 +147,7 @@ public class User
         {
             if (isOnline())
             {
-                sendMessage("cooldown;message");
+                sendMessage("cooldown.wait");
             }
         }
 
@@ -163,7 +168,7 @@ public class User
     /**
      * Updates the user's playtime
      */
-    public void updatePlayTime()
+    private void updatePlayTime()
     {
         playTime += (System.currentTimeMillis() - joinTime);
 
@@ -201,10 +206,11 @@ public class User
      *
      * @see #addLog(String, boolean)
      * @param log The log message
+     * @param params Optional formatting arguments
      */
-    public void addLog(String log)
+    public void addLog(String log, Object... params)
     {
-        addLog(log, true);
+        addLog(String.format(log, params), true);
     }
 
     /**
@@ -213,7 +219,7 @@ public class User
      * @param log The log message
      * @param serverName Whether to include the server name in the log message
      */
-    public void addLog(String log, boolean serverName)
+    private void addLog(String log, boolean serverName)
     {
         String server = serverName ? "[" + core.getNetwork().getServerName() + "] " : "";
         String ip = isOnline() ? "[" + getIp() + "]" : "";
@@ -335,7 +341,7 @@ public class User
 
         if (locale.equals(getLocale()) && isOnline())
         {
-            sendMessage("locale;already_using");
+            sendMessage("locale.already_using");
             return;
         }
 
@@ -343,7 +349,7 @@ public class User
 
         if (isOnline())
         {
-            sendMessage("locale;updated");
+            sendMessage("locale.updated");
         }
     }
 
@@ -429,14 +435,6 @@ public class User
         updatePlayTime();
 
         return playTime;
-    }
-
-    /**
-     * @return The user's database object ID
-     */
-    public int getDatabaseId()
-    {
-        return id;
     }
 
     /**

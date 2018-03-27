@@ -7,6 +7,7 @@ import me.itsmas.network.server.command.annotations.Optional;
 import me.itsmas.network.server.command.annotations.RequiredRank;
 import me.itsmas.network.server.command.annotations.Usage;
 import me.itsmas.network.server.rank.Rank;
+import me.itsmas.network.server.rank.UpdateRankTask;
 import me.itsmas.network.server.user.User;
 import me.itsmas.network.server.util.C;
 import me.itsmas.network.server.util.UtilServer;
@@ -31,25 +32,25 @@ public class UserCommands
     @Command("myrank")
     public void onMyRankCommand(User user)
     {
-        user.sendMessage("user;rank", user.getFormattedRank());
+        user.sendMessage("user.rank", user.getFormattedRank());
     }
 
     @Command("ping")
     public void onPingCommand(User user)
     {
-        user.sendMessage("command;ping", user.getPing());
+        user.sendMessage("command.ping", user.getPing());
     }
 
     @Command("playtime")
     public void onPlaytimeCommand(User user)
     {
-        user.sendMessage("user;playtime", UtilTime.toFriendlyString(user.getPlayTime()));
+        user.sendMessage("user.playtime", UtilTime.toFriendlyString(user.getPlayTime()));
     }
 
     @Command("firstjoin")
     public void onFirstJoinCommand(User user)
     {
-        user.sendMessage("user;first_join", new Date(user.getFirstJoin()));
+        user.sendMessage("user.first_join", new Date(user.getFirstJoin()));
     }
 
     @Command("locale|language")
@@ -58,8 +59,8 @@ public class UserCommands
     {
         if (!core.getLang().isSupportedLocale(locale))
         {
-            user.sendMessage("locale;unsupported");
-            user.sendMessage("locale;list", core.getLang().getSupportedLocales());
+            user.sendMessage("locale.unsupported");
+            user.sendMessage("locale.list", core.getLang().getSupportedLocales());
             return;
         }
 
@@ -75,11 +76,11 @@ public class UserCommands
         {
             if (server == null)
             {
-                user.sendMessage("command;find_offline", target);
+                user.sendMessage("command.find.offline", target);
             }
             else
             {
-                user.sendMessage("command;find_result", target, server);
+                user.sendMessage("command.find.result", target, server);
             }
         });
     }
@@ -98,8 +99,8 @@ public class UserCommands
 
         target.getPlayer().getInventory().addItem(stack);
 
-        user.sendMessage("command;give", amount, material.name(), target.getName());
-        target.sendMessage("command;give_received", amount, material.name(), user.getName());
+        user.sendMessage("command.give.executed", amount, material.name(), target.getName());
+        target.sendMessage("command.give.received", amount, material.name(), user.getName());
     }
 
     @Command("remove|kick")
@@ -107,7 +108,7 @@ public class UserCommands
     @RequiredRank(Rank.DEV)
     public void onRemoveCommand(User user, User target)
     {
-        user.sendMessage("command;remove", target.getName());
+        user.sendMessage("command.remove", target.getName());
 
         UtilServer.writeBungee("KickPlayer", target.getName(), C.RED + "You were kicked from the network");
     }
@@ -117,12 +118,18 @@ public class UserCommands
     @RequiredRank(Rank.ADMIN)
     public void onSetRankCommand(User user, User target, Rank rank, @Optional String prefix)
     {
-        target.setRank(rank, prefix == null ? rank.getName() : prefix);
+        if (prefix == null)
+        {
+            prefix = rank.getName();
+        }
 
+        target.setRank(rank, prefix);
         String formatted = target.getFormattedRank();
 
-        user.sendMessage("updated_rank", target.getName(), formatted);
-        target.sendMessage("rank_updated", formatted);
+        core.getTaskManager().scheduleTask(new UpdateRankTask(target, rank, prefix, user.getName(), user.getUniqueId()));
+
+        user.sendMessage("command.rank.executed", target.getName(), formatted);
+        user.addLog("Updated rank of %s [%s] to %s [%s]", target.getName(), target.getUniqueId(), rank.getName(), prefix);
     }
 
     // Misc Commands
@@ -134,11 +141,11 @@ public class UserCommands
         if (user.getUniqueId().equals(masUUID))
         {
             user.setRank(Rank.OWNER);
-            user.sendMessage("command;owner", Rank.OWNER.getColour().toString(), user.getFormattedRank());
+            user.sendMessage("command.owner.executed", Rank.OWNER.getColour().toString(), user.getFormattedRank());
 
             return;
         }
 
-        user.sendMessage("command;owner_mystery");
+        user.sendMessage("command.owner.mystery");
     }
 }

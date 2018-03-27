@@ -30,6 +30,6 @@ public class UserResolver implements ContextResolver<User>
     @Override
     public void sendError(User user, String input)
     {
-        user.sendMessage("command;user_offline");
+        user.sendMessage("command.user_offline");
     }
 }

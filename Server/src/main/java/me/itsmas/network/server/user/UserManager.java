@@ -67,7 +67,18 @@ public class UserManager extends Module
      */
     public User getUser(Player player)
     {
-        return users.get(player.getUniqueId());
+        return getUser(player.getUniqueId());
+    }
+
+    /**
+     * Fetches a {@link User} object from a {@link UUID}
+     *
+     * @param uuid The user's UUID
+     * @return The user
+     */
+    public User getUser(UUID uuid)
+    {
+        return users.get(uuid);
     }
 
     /**

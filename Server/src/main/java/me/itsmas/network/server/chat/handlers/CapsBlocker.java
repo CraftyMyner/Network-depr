@@ -19,7 +19,8 @@ public class CapsBlocker implements ChatHandler
     {
         if (UtilString.percentCaps(msg) > CAPS_PERCENT_BLOCK)
         {
-            user.sendMessage("chat;caps");
+            user.sendMessage("chat.caps");
+            user.addLog("Chat blocked [caps]: %s", msg);
             return false;
         }
 

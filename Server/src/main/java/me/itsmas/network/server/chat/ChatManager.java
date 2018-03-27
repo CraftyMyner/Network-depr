@@ -32,7 +32,7 @@ public class ChatManager extends Module
         {
             if (user.isCoolingDown("Chat", 1000, false))
             {
-                user.sendMessage("chat;cooldown");
+                user.sendMessage("chat.cooldown");
                 return false;
             }
 
@@ -74,7 +74,7 @@ public class ChatManager extends Module
 
         event.setFormat(formatChat(user));
 
-        user.addLog("Sent chat: " + msg);
+        user.addLog("Sent chat: %s", msg);
     }
 
     /**

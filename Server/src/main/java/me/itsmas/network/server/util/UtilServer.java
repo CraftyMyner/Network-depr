@@ -3,6 +3,7 @@ package me.itsmas.network.server.util;
 import com.google.common.collect.Iterables;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import me.itsmas.network.api.UtilException;
 import me.itsmas.network.server.Core;
 import me.itsmas.network.server.rank.Rank;
 import org.bukkit.Bukkit;
@@ -25,7 +26,7 @@ public final class UtilServer
      */
     private UtilServer()
     {
-        throw new AssertionError("Cannot instantiate utility class");
+        UtilException.throwNew();
     }
 
     /**

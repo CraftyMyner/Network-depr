@@ -1,6 +1,7 @@
 package me.itsmas.network.server.module;
 
 import me.itsmas.network.server.Core;
+import me.itsmas.network.server.util.UtilServer;
 import org.bukkit.event.Listener;
 
 /**
@@ -31,6 +32,8 @@ public abstract class SubModule<T extends Module> implements Listener
     {
         this.core = module.core;
         this.module = module;
+
+        UtilServer.registerListener(this);
     }
 
     /**
@@ -39,19 +42,19 @@ public abstract class SubModule<T extends Module> implements Listener
     void onDisable(){}
 
     /**
-     * @see Module#log(String)
+     * @see Module#log(String, Object...)
      */
-    protected void log(String msg)
+    protected void log(String msg, Object... params)
     {
-        module.log("[" + name + "] " + msg);
+        module.log("[" + name + "] " + String.format(msg, params));
     }
 
     /**
-     * @see Module#logFatal(String)
+     * @see Module#logFatal(String, Object...)
      */
-    protected void logFatal(String msg)
+    protected void logFatal(String msg, Object... params)
     {
-        module.logFatal("[" + name + "] " + msg);
+        module.logFatal("[" + name + "] " + String.format(msg, params));
     }
 }
 

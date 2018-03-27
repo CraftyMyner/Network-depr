@@ -2,6 +2,7 @@ package me.itsmas.network.bungee.util;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import me.itsmas.network.api.UtilException;
 import me.itsmas.network.bungee.Core;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -19,7 +20,7 @@ public final class UtilServer
      */
     private UtilServer()
     {
-        throw new AssertionError("Cannot instantiate utility class");
+        UtilException.throwNew();
     }
 
     /**

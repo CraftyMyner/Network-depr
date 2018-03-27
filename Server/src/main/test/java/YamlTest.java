@@ -1,14 +1,22 @@
 
-import me.itsmas.network.server.task.NetworkTask;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.junit.Test;
 
-public class ClassTest
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+public class YamlTest
 {
     @Test
     public void rankTest()
     {
-        Class<?> clazz = NetworkTask.class;
+        InputStream input = getClass().getClassLoader().getResourceAsStream("en_US.yml");
 
-        System.out.println(clazz.getCanonicalName());
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(new InputStreamReader(input));
+
+        for (String key : config.getKeys(true))
+        {
+            System.out.println(key + " " + (config.isConfigurationSection(key)));
+        }
     }
 }

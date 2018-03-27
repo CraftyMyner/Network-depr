@@ -14,7 +14,7 @@ public final class UtilTime
      */
     private UtilTime()
     {
-        throw new AssertionError("Cannot instantiate utility class");
+        UtilException.throwNew();
     }
 
     /**

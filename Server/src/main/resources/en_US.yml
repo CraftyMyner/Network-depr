@@ -1,47 +1,58 @@
-locale;updated: "&aYour language was updated to English (US)"
-locale;unsupported: "&cThat locale is not supported"
-locale;already_using: "&cYou are already using that locale"
-locale;list: "&bSupported locales: %s"
-
-user;rank: "&aYour rank is %s"
-user;playtime: "&aYour playtime is %s"
-user;first_join: "&aYou first joined on %s"
-
-rank_updated: "&aYour rank has been updated to %s"
-updated_rank: "&aYou updated &e%s's &arank to %s"
+locale:
+  updated: "&aYour language was updated to English (US)"
+  unsupported: "&cThat locale is not supported"
+  already_using: "&cYou are already using that locale"
+  list: "&bSupported locales: %s"
 
 no_permission: "&cYou don't have permission"
 
-cooldown;message: "&cYou must wait before using %s"
+user:
+  rank: "&aYour rank is %s"
+  playtime: "&aYour playtime is %s"
+  first_join: "&aYou first joined on %s"
+  rank_updated: "&aYour rank has been updated to %s"
 
-chat;server_start_wait: "&cYou cannot chat yet"
-chat;cooldown: "&cYou must wait before speaking again"
-chat;caps: "&cYour message contains too many caps"
-chat;filter: "&cYour message was blocked by the filter"
+cooldown:
+  wait: "&cYou must wait before using %s"
 
-command;usage: "&cUsage: /%s %s"
-command;cooldown: "&cYou must wait before using another command"
+chat:
+  server_start_wait: "&cYou cannot chat yet"
+  cooldown: "&cYou must wait before speaking again"
+  caps: "&cYour message contains too many caps"
+  filter: "&cYour message was blocked by the filter"
 
-command;invalid_number: "&c'%s' is not a valid number"
-command;invalid_rank: "&cThat is not a valid rank"
-command;invalid_material: "&cThat is not a valid item"
-command;user_offline: "&cThat user is not online"
+command:
+  usage: "&cUsage: /%s %s"
+  cooldown: "&cYou must wait before using another command"
+  server_start_wait: "&cYou cannot use commands yet"
 
-command;ping: "&eYour ping is %sms"
+  invalid_number: "&c'%s' is not a valid number"
+  invalid_rank: "&c'%s' is not a valid rank"
+  invalid_material: "&c'%s' is not a valid item"
+  user_offline: "&cThat user is not online"
 
-command;find_offline: "&cPlayer %s could not be found"
-command;find_result: "&aPlayer &e%s &ais on server &e%s"
+  rank:
+    executed: "&aYou updated &e%s's &arank to %s"
 
-command;give: "&bYou gave &a%s &bof &a%s &bto &a%s"
-command;give_received: "&bYou were given &a%s &bof &a%s &bby &a%s"
+  ping: "&eYour ping is %sms"
 
-command;remove: "&cYou removed &e%s &cfrom the network"
+  find:
+    result: "&aPlayer &e%s &ais on server &e%s"
+    offline: "&cPlayer %s could not be found"
 
-command;owner: "%sUpdated rank to %s"
-command;owner_mystery: "&1N&2o&3t&4h&5i&6n&7g &bto see here"
+  give:
+    executed: "&bYou gave &a%s &bof &a%s &bto &a%s"
+    received: "&bYou were given &a%s &bof &a%s &bby &a%s"
 
-server;current: "&aYou are  currently on server %s"
-server;sending: "&aSending you to server %s"
-server;already_current: "&cYou are already on that server"
-server;invalid_server: "&cThat server does not exist"
-server;switch_cooldown: "&cYou must wait before switching servers"
+  remove: "&cYou removed &e%s &cfrom the network"
+
+  owner:
+    executed: "%sUpdated rank to %s"
+    mystery: "&1N&2o&3t&4h&5i&6n&7g &bto see here"
+
+server:
+  current: "&aYou are  currently on server %s"
+  sending: "&aSending you to server %s"
+  already_current: "&cYou are already on that server"
+  invalid: "&cThat server does not exist"
+  cooldown: "&cYou must wait before switching servers"

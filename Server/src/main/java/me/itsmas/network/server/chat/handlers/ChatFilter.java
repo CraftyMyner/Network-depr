@@ -34,9 +34,9 @@ public class ChatFilter implements ChatHandler
         {
             if (msg.contains(blocked))
             {
-                user.sendMessage("chat;filter");
+                user.sendMessage("chat.filter");
 
-                user.addLog("Tried to send chat: " + msg);
+                user.addLog("Chat blocked [filter]: %s", msg);
                 return false;
             }
         }

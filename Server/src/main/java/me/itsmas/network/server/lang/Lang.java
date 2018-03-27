@@ -24,6 +24,8 @@ public class Lang extends Module
     {
         locales = new HashMap<>();
 
+        // FIXME: 13/09/2017 Use YAML to full potential
+
         registerLocale(DEFAULT_LOCALE);
     }
 
@@ -110,9 +112,12 @@ public class Lang extends Module
 
         for (String messageId : config.getKeys(true))
         {
-            String message = UtilString.colour(config.getString(messageId));
+            if (!config.isConfigurationSection(messageId))
+            {
+                String message = UtilString.colour(config.getString(messageId));
 
-            data.addMessage(messageId.toLowerCase(), message);
+                data.addMessage(messageId.toLowerCase(), message);
+            }
         }
     }
 

@@ -15,6 +15,6 @@ public class MaterialResolver implements ContextResolver<Material>
     @Override
     public void sendError(User user, String input)
     {
-        user.sendMessage("command;invalid_material");
+        user.sendMessage("command.invalid_material");
     }
 }

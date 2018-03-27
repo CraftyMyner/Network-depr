@@ -41,6 +41,8 @@ public abstract class Module implements Listener
         UtilServer.registerListener(this);
 
         onEnable();
+
+        log("Initialised module successfully");
     }
 
     /**
@@ -63,7 +65,7 @@ public abstract class Module implements Listener
     @SuppressWarnings("unchecked")
     protected <T extends SubModule> T addSubModule(SubModule subModule)
     {
-        UtilServer.registerListener(subModule);
+        subModules.add(subModule);
         return (T) subModule;
     }
 
@@ -103,21 +105,24 @@ public abstract class Module implements Listener
      * Logs a message to the console
      *
      * @param msg The message to log
+     * @param params Optional formatting arguments
      */
-    protected void log(String msg)
+    protected void log(String msg, Object... params)
     {
-        Logs.log(name + " > " + msg);
+        Logs.log(name + " > " + String.format(msg, params));
     }
 
     /**
      * Logs a fatal error to the console
      *
      * @param msg The message to log
+     * @param params Optional formatting arguments
      */
-    protected void logFatal(String msg)
+    protected void logFatal(String msg, Object... params)
     {
-        Logs.logError(name + " > " + msg);
+        String formatted = String.format(msg, params);
 
-        UtilServer.broadcastInternal(msg, Rank.DEV, true);
+        Logs.logError(name + " > " + formatted);
+        UtilServer.broadcastInternal(formatted, Rank.DEV, true);
     }
 }

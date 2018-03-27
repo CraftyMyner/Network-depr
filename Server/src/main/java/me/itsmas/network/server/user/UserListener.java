@@ -31,7 +31,7 @@ class UserListener extends SubModule<UserManager>
 
         if (user == null)
         {
-            user = new User(uuid);
+            user = new User(event.getName(), uuid);
 
             core.getDatabase().saveUser(user);
         }
@@ -45,7 +45,6 @@ class UserListener extends SubModule<UserManager>
         Player player = event.getPlayer();
 
         User user = module.getUser(player);
-
         user.initJoin(core, player);
     }
 

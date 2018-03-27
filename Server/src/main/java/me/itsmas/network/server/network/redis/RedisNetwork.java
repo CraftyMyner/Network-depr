@@ -1,17 +1,21 @@
-package me.itsmas.network.server.network;
+package me.itsmas.network.server.network.redis;
 
 import me.itsmas.network.server.Core;
+import me.itsmas.network.server.network.Network;
+import me.itsmas.network.server.network.NetworkPacket;
 import me.itsmas.network.server.util.UtilServer;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.JedisPubSub;
 import redis.clients.jedis.Protocol;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
+/**
+ * Redis {@link Network} implementation
+ */
 public class RedisNetwork extends Network
 {
     public RedisNetwork(Core core)
@@ -37,7 +41,7 @@ public class RedisNetwork extends Network
         RedisInfo info = new RedisInfo(core);
         pool = new JedisPool(new JedisPoolConfig(), info.getIp(), info.getPort(), Protocol.DEFAULT_TIMEOUT, info.getPassword());
 
-        executeAsync(this::initPubSub);
+        initPubSub();
 
         log("Redis connection established");
     }
@@ -46,6 +50,29 @@ public class RedisNetwork extends Network
      * The Jedis pool instance
      */
     private JedisPool pool;
+
+    /**
+     * The publisher/subscriber instance
+     */
+    private NetworkPubSub pubSub;
+
+    /**
+     * Initialises the pubsub
+     *
+     * @see #pubSub
+     */
+    private void initPubSub()
+    {
+        pubSub = new NetworkPubSub(this);
+    }
+
+    @Override
+    protected void setServerName(String serverName)
+    {
+        super.setServerName(serverName);
+
+        pubSub.subscribeChannels(serverName, GLOBAL_CHANNEL);
+    }
 
     @Override
     public void onDisable()
@@ -69,25 +96,15 @@ public class RedisNetwork extends Network
      * @see #updateQueue
      * @see #updateServer(String)
      */
-    void resetQueue()
+    public void resetQueue()
     {
         updateQueue.forEach(this::updateServer);
 
         updateQueue = null;
     }
 
-    private void initPubSub()
-    {
-
-    }
-
-    private class NetworkPubSub extends JedisPubSub
-    {
-
-    }
-
     @Override
-    void updateServer(String player)
+    public void updateServer(String player)
     {
         if (getServerName() == null)
         {
@@ -99,7 +116,7 @@ public class RedisNetwork extends Network
     }
 
     @Override
-    void removeTrackingData(String player)
+    public void removeTrackingData(String player)
     {
         executeAsync(jedis -> jedis.hdel(player.toLowerCase(), SERVER_FIELD));
     }
@@ -118,7 +135,7 @@ public class RedisNetwork extends Network
     @Override
     public void sendPacket(NetworkPacket packet, String server)
     {
-        executeAsync(jedis -> jedis.subscribe());
+        executeAsync(jedis -> jedis.publish(server, packet.toString()));
     }
 
     /**
@@ -135,6 +152,12 @@ public class RedisNetwork extends Network
         }
     }
 
+    /**
+     * Executes a {@link Jedis} task asynchronously
+     *
+     * @see #executeJedis(Consumer)
+     * @param consumer The action to execute
+     */
     private void executeAsync(Consumer<Jedis> consumer)
     {
         UtilServer.runAsync(() -> executeJedis(consumer));

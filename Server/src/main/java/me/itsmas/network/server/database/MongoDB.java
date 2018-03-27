@@ -16,6 +16,8 @@ import org.mongodb.morphia.mapping.DefaultCreator;
 import java.util.Collections;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MongoDB extends Module implements Database
 {
@@ -51,6 +53,7 @@ public class MongoDB extends Module implements Database
     public void connect()
     {
         log("Attempting to connect to MongoDB database");
+        disableMongoLogging();
 
         info = new DatabaseInfo(core);
 
@@ -65,6 +68,14 @@ public class MongoDB extends Module implements Database
         setupMorphia();
 
         log("Connected to MongoDB database");
+    }
+
+    /**
+     * Disables the logging of MongoDB debug messsages
+     */
+    private void disableMongoLogging()
+    {
+        Logger.getLogger("org.mongodb.driver").setLevel(Level.OFF);
     }
 
     /**

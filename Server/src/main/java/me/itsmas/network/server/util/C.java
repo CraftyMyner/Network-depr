@@ -1,5 +1,6 @@
 package me.itsmas.network.server.util;
 
+import me.itsmas.network.api.UtilException;
 import org.bukkit.ChatColor;
 
 /**
@@ -12,7 +13,7 @@ public final class C
      */
     private C()
     {
-        throw new AssertionError("Cannot instantiate utility class");
+        UtilException.throwNew();
     }
 
     public static final String BLACK = ChatColor.BLACK.toString();

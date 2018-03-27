@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import me.itsmas.network.server.module.SubModule;
+import me.itsmas.network.server.network.redis.RedisNetwork;
 import me.itsmas.network.server.util.UtilServer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
@@ -24,6 +25,9 @@ public class BungeeListener extends SubModule<Network> implements PluginMessageL
         initBungeeMessages();
     }
 
+    /**
+     * Initialises Bungee messaging methods
+     */
     private void initBungeeMessages()
     {
         registerChannels();
@@ -44,6 +48,9 @@ public class BungeeListener extends SubModule<Network> implements PluginMessageL
         }, 0L, 20L);
     }
 
+    /**
+     * Registers outgoing and incoming messaging channels
+     */
     private void registerChannels()
     {
         UtilServer.registerOutgoing("BungeeCord");
@@ -65,7 +72,7 @@ public class BungeeListener extends SubModule<Network> implements PluginMessageL
                 {
                     String serverName = in.readUTF();
 
-                    log("Received server name: " + serverName);
+                    log("Received server name: %s ", serverName);
 
                     module.setServerName(serverName);
 

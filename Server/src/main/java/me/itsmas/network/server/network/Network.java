@@ -11,9 +11,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
+/**
+ * Network abstraction
+ */
 public abstract class Network extends Module
 {
-    Network(Core core, String name)
+    protected Network(Core core, String name)
     {
         super(core, name);
     }
@@ -30,7 +33,7 @@ public abstract class Network extends Module
         {
             if (core.getNetwork().getServerName() == null)
             {
-                user.sendMessage("chat;server_start_wait");
+                user.sendMessage("chat.server_start_wait");
                 return false;
             }
 
@@ -49,7 +52,7 @@ public abstract class Network extends Module
      * @see #serverName
      * @param serverName The server's name
      */
-    final void setServerName(String serverName)
+    protected void setServerName(String serverName)
     {
         this.serverName = serverName;
     }
@@ -114,24 +117,24 @@ public abstract class Network extends Module
     {
         if (server.equals(getServerName()))
         {
-            user.sendMessage("server;already_current");
+            user.sendMessage("server.already_current");
             return;
         }
 
         if (!serverExists(server))
         {
-            user.sendMessage("server;invalid_server");
+            user.sendMessage("server.invalid");
             return;
         }
 
         if (user.isCoolingDown(SWITCH_COOLDOWN, serverSwitchCooldown, false))
         {
-            user.sendMessage("server;switch_cooldown");
+            user.sendMessage("server.cooldown");
             return;
         }
 
         user.save(false);
-        user.sendMessage("server;sending", server);
+        user.sendMessage("server.sending", server);
 
         UtilServer.runDelayed(() -> UtilServer.writeBungee("ConnectOther", user.getName(), server), serverSwitchDelay);
     }
@@ -152,14 +155,14 @@ public abstract class Network extends Module
      *
      * @param player The name of the player switching server
      */
-    abstract void updateServer(String player);
+    public abstract void updateServer(String player);
 
     /**
      * Removes a player's server location on the network from storage
      *
      * @param player The player leaving the network
      */
-    abstract void removeTrackingData(String player);
+    public abstract void removeTrackingData(String player);
 
     /**
      * Fetches the server a player is on
@@ -169,12 +172,35 @@ public abstract class Network extends Module
      */
     public abstract void getServer(String player, Consumer<String> consumer);
 
+    /**
+     * Sends a {@link NetworkPacket} to a server
+     *
+     * @param packet The packet to send
+     * @param server The destination server
+     */
+    public abstract void sendPacket(NetworkPacket packet, String server);
+
+    /**
+     * The "global" message channel
+     */
+    public static final String GLOBAL_CHANNEL = "global";
+
+    /**
+     * Sends a {@link Network} to all server
+     *
+     * @param packet The packet to send
+     */
+    public void sendPacketGlobal(NetworkPacket packet)
+    {
+        sendPacket(packet, GLOBAL_CHANNEL);
+    }
+
     @Command("server")
     public void onServerCommand(User user, @Optional String server)
     {
         if (server == null)
         {
-            user.sendMessage("server;current", getServerName());
+            user.sendMessage("server.current", getServerName());
             return;
         }
 

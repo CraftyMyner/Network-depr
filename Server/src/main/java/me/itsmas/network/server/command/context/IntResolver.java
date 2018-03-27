@@ -20,6 +20,6 @@ public class IntResolver implements ContextResolver<Integer>
     @Override
     public void sendError(User user, String input)
     {
-        user.sendMessage("command;invalid_number", input);
+        user.sendMessage("command.invalid_number", input);
     }
 }

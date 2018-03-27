@@ -7,10 +7,14 @@ import me.itsmas.network.server.database.MongoDB;
 import me.itsmas.network.server.lang.Lang;
 import me.itsmas.network.server.module.ModuleManager;
 import me.itsmas.network.server.network.Network;
-import me.itsmas.network.server.network.RedisNetwork;
+import me.itsmas.network.server.network.redis.RedisNetwork;
+import me.itsmas.network.server.task.TaskManager;
 import me.itsmas.network.server.user.UserManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+/**
+ * Main class for the Core plugin
+ */
 public class Core extends JavaPlugin
 {
     private ModuleManager moduleManager;
@@ -19,6 +23,7 @@ public class Core extends JavaPlugin
     private ChatManager chatManager;
     private Network network;
     private UserManager userManager;
+    private TaskManager taskManager;
     private Lang lang;
 
     @Override
@@ -32,6 +37,7 @@ public class Core extends JavaPlugin
         chatManager = new ChatManager(this);
         network = new RedisNetwork(this);
         userManager = new UserManager(this);
+        taskManager = new TaskManager(this);
         lang = new Lang(this);
     }
 
@@ -68,6 +74,11 @@ public class Core extends JavaPlugin
         return commandManager;
     }
 
+    public ChatManager getChatManager()
+    {
+        return chatManager;
+    }
+
     public Network getNetwork()
     {
         return network;
@@ -78,13 +89,13 @@ public class Core extends JavaPlugin
         return userManager;
     }
 
+    public TaskManager getTaskManager()
+    {
+        return taskManager;
+    }
+
     public Lang getLang()
     {
         return lang;
-    }
-
-    public ChatManager getChatManager()
-    {
-        return chatManager;
     }
 }

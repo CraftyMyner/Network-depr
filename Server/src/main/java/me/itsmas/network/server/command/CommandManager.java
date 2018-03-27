@@ -174,6 +174,12 @@ public class CommandManager extends Module
     {
         User user = core.getUserManager().getUser(event.getPlayer());
 
+        if (core.getNetwork().getServerName() == null)
+        {
+            user.sendMessage("command.server_start_wait");
+            return;
+        }
+
         List<String> args = new ArrayList<>(Arrays.asList(event.getMessage().split(" ")));
         String alias = args.remove(0).substring(1);
 
@@ -190,13 +196,13 @@ public class CommandManager extends Module
 
                 if (args.size() < cmd.getMinArgs() || args.size() > cmd.getMaxArgs())
                 {
-                    user.sendMessage("command;usage", alias, cmd.getUsage());
+                    user.sendMessage("command.usage", alias, cmd.getUsage());
                     return;
                 }
 
                 if (user.isCoolingDown("Command", 1000, false))
                 {
-                    user.sendMessage("command;cooldown");
+                    user.sendMessage("command.cooldown");
                     return;
                 }
 
@@ -267,11 +273,11 @@ public class CommandManager extends Module
         {
             method.invoke(cmd.getObject(), params.toArray(new Object[0]));
 
-            user.addLog("Executed command: " + rawMsg);
+            user.addLog("Executed command: %s", rawMsg);
         }
         catch (IllegalAccessException | InvocationTargetException ex)
         {
-            logFatal("Error executing command for player " + user.getName() + ": " + rawMsg);
+            logFatal("Error executing command for player %s: %s", user.getName(), rawMsg);
             ex.printStackTrace();
         }
     }

@@ -1,4 +1,4 @@
-package me.itsmas.network.server.network;
+package me.itsmas.network.server.network.redis;
 
 import me.itsmas.network.server.Core;
 
